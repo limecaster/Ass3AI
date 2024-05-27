@@ -1,5 +1,6 @@
 import math
 import chess
+import chess.engine
 import torch
 from neural_net import NeuralNet
 from data_preprocessing import board_to_tensor
@@ -88,4 +89,13 @@ if __name__ == "__main__":
     mcts.search(root)
 
     best_move = max(root.children.items(), key=lambda item: item[1].visit_count)[0]
+    
+    # best move from chess engine stockfish
+    # Download stockfish engine from https://stockfishchess.org/download/
+    engine = chess.engine.SimpleEngine.popen_uci("stockfish\stockfish-windows-x86-64-avx2.exe")
+    result = engine.play(board, chess.engine.Limit(time=0.1))
+    
+    # Compare the best move from MCTS and the best move from the engine
+    print(f"Engine's best move: {result.move.uci()}")
     print(f"Best move: {best_move.uci()}")
+    engine.quit()
