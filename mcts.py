@@ -77,10 +77,10 @@ class MCTS:
 
 # Example usage
 if __name__ == "__main__":
-    board = chess.Board("r1bqkb1r/pppp1ppp/2n2n2/4p2Q/2B1P3/8/PPPP1PPP/RNB1K1NR w KQkq - 4 4")
+    board = chess.Board("rn1q1rk1/1pp1bppp/p1b1pn2/8/P1QP4/5NP1/1P2PPBP/RNB2RK1 w - - 1 10")
     print(board)
     model = NeuralNet()  # Initialize your neural network here
-    model.load_state_dict(torch.load("chess_model.pth"))
+    model.load_state_dict(torch.load("chess_model.pth", map_location=torch.device('cpu')))
     model.eval()
     
     root = Node(board)
