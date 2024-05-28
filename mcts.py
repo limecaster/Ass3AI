@@ -4,6 +4,7 @@ import chess.engine
 import torch
 from neural_net import NeuralNet
 from data_preprocessing import board_to_tensor
+from agent import Agent
 
 class Node:
     def __init__(self, board, parent=None):
@@ -31,6 +32,7 @@ class Node:
             new_board.push(move)
             self.children[move] = Node(new_board, parent=self)
             self.children[move].prior_policy = self.prior_policy[i]
+            #print(f"Move: {move} | Prior policy: {self.prior_policy[i]}")
 
 class MCTS:
     def __init__(self, model, simulations=800):
@@ -77,25 +79,33 @@ class MCTS:
 
 # Example usage
 if __name__ == "__main__":
-    board = chess.Board("rn1q1rk1/1pp1bppp/p1b1pn2/8/P1QP4/5NP1/1P2PPBP/RNB2RK1 w - - 1 10")
+    #board = chess.Board("rn1q1rk1/1pp1bppp/p1b1pn2/8/P1QP4/5NP1/1P2PPBP/RNB2RK1 w - - 1 10")
+    board = chess.Board()
     print(board)
-    model = NeuralNet()  # Initialize your neural network here
+    model = NeuralNet()
     model.load_state_dict(torch.load("chess_model.pth", map_location=torch.device('cpu')))
     model.eval()
     
-    root = Node(board)
-    root.expand(model)
+    # Demo game Agent vs MCTS
+    agent = Agent(chess.WHITE)
     mcts = MCTS(model)
-    mcts.search(root)
-
-    best_move = max(root.children.items(), key=lambda item: item[1].visit_count)[0]
+    root = Node(board)
     
-    # best move from chess engine stockfish
-    # Download stockfish engine from https://stockfishchess.org/download/
-    engine = chess.engine.SimpleEngine.popen_uci("stockfish\stockfish-windows-x86-64-avx2.exe")
-    result = engine.play(board, chess.engine.Limit(time=0.1))
+    # Play a game between Agent and MCTS
+    while not board.is_game_over():
+        if board.turn == agent.get_color():
+            move = agent.get_move(board)
+            print(f"Agent moves: {move}")
+            board.push(move)
+        else:
+            mcts.search(root)
+            best_move, _ = mcts.select(root)
+            print(f"MCTS moves: {best_move}")
+            board.push(best_move)
+            # Reset the root node to the child node corresponding to the best move
+            root = root.children[best_move]
+            
     
-    # Compare the best move from MCTS and the best move from the engine
-    print(f"Engine's best move: {result.move.uci()}")
-    print(f"Best move: {best_move.uci()}")
-    engine.quit()
+    print("Game over")
+    print(board.result())
+    
