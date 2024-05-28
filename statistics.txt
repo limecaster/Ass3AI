@@ -1,0 +1,16 @@
+Agent vs MCTS Game Statistics:
+Agent's color: white
+Agent elo rating: 0
+MCTS's color: white
+Move count: 57
+Game result: 1-0
+. . . . . B . .
+q . . b . . . .
+. p p . p N . k
+p . . . P Q N .
+. . . . . P p .
+. . . B . . . P
+P P P R . . . .
+K . . . . . . R
+
+ 
