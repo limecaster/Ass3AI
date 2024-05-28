@@ -19,7 +19,7 @@ The agent is simulated by stockfish based on the Elo rating.
 ### Chess games dataset and NNs model
 Using 19000 chess games happen in 2023 for training, the source of dataset is from [chess.com](https://www.chess.com/forum/view/general/chess-pgn-database-over-9-million-games)
 
-Neural network architecture: \\
+Neural network architecture: 
 ```                                             
     [8x8x14]->[8x8x32]->[8x8x64]->[4x4x64]->[256x1]->[4096x1]: Policy head
                                                    ->[1x1]: Value head
